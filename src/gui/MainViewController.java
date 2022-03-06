@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alerts;
@@ -34,12 +35,15 @@ public class MainViewController implements Initializable {
 
 	@FXML
 	public void onMenuItemDepartmentAction() {// EventHandler
-		loadView2("/gui/DepartmentList.fxml");
+		loadView("/gui/DepartmentList.fxml", (DepartmentListController controller)->{
+			controller.setDepartmentService(new DepartmentService());
+			controller.updateTableView();
+		});
 	}
 
 	@FXML
 	public void onMenuItemAboutAction() {// EventHandler
-		loadView("/gui/About.fxml");
+		loadView("/gui/About.fxml",x ->{});
 	}
 
 	@Override
@@ -48,8 +52,8 @@ public class MainViewController implements Initializable {
 
 	}
 
-	// metodo para carregar a pagina ao clicar no menu
-	private synchronized void loadView(String absoluteName) {//synchronized - multitread
+	
+	private synchronized <T> void loadView(String absoluteName, Consumer<T> initializingAction) {//synchronized - multitread
 		try {
 			
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
@@ -63,7 +67,8 @@ public class MainViewController implements Initializable {
 			mainVBox.getChildren().add(mainMenu);
 			mainVBox.getChildren().addAll(newVBox);
 		
-				
+			T controller = loader.getController();
+			initializingAction.accept(controller);// executa a função que foi passado no EventHandler - public void onMenuItemDepartmentAction()
 		}
 		catch(IOException e){
 			Alerts.showAlert("IO Exception","Erro ao Carregar a Pagina" , e.getMessage(), AlertType.ERROR);
@@ -72,32 +77,8 @@ public class MainViewController implements Initializable {
 		}
 	
 	
-	
-	
-	private synchronized void loadView2(String absoluteName) {//synchronized - multitread
-		try {
-			
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-			VBox newVBox = loader.load();
-			
-			Scene mainScene = Main.getMainScene();
-			VBox mainVBox =(VBox) ((ScrollPane)mainScene.getRoot()).getContent();
-			
-			Node mainMenu = mainVBox.getChildren().get(0);
-			mainVBox.getChildren().clear();
-			mainVBox.getChildren().add(mainMenu);
-			mainVBox.getChildren().addAll(newVBox);
-		
-			DepartmentListController controller = loader.getController();
-			controller.setDepartmentService(new DepartmentService());//injeção de dependencia no controller
-			controller.updateTableView();
-			
-		}
-		catch(IOException e){
-			Alerts.showAlert("IO Exception","Erro ao Carregar a Pagina" , e.getMessage(), AlertType.ERROR);
-				
-			}
-		}
+
+
 }
 
 
