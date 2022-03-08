@@ -11,7 +11,7 @@ import db.DbException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
-import gui.util.utils;
+import gui.util.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -74,7 +74,7 @@ public class DepartmentFormController implements Initializable{
 			entity = getFormData();
 			service.saveOrUpdate(entity);
 			notifyDataChangeListeners();
-			utils.currentStage(event).close();//fechar a janela ao salvar os dados
+			Utils.currentStage(event).close();//fechar a janela ao salvar os dados
 		
 		}
 		catch(ValidationException e) {
@@ -99,7 +99,7 @@ public class DepartmentFormController implements Initializable{
 		//VALIDAÇÃO
 		ValidationException exception = new ValidationException("Erro de Validação");
 		
-		obj.setId(utils.tryParseToInt(txtId.getText()));
+		obj.setId(Utils.tryParseToInt(txtId.getText()));
 		
 		if ( txtName.getText() == null || txtName.getText().trim().equals("")){
 			exception.addError("name", "Campo nao pode ser vazio!");
@@ -115,7 +115,7 @@ public class DepartmentFormController implements Initializable{
 
 	@FXML
 	public void onBtCancelAction(ActionEvent event) {
-		utils.currentStage(event).close();
+		Utils.currentStage(event).close();
 	}
 	
 	
