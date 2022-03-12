@@ -30,6 +30,14 @@ public class Utils {
 		}
 	}
 
+	public static Double tryParseToDouble(String str) {// ler dado de uma label que tem numero inteiro
+		try {
+			return Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
 	public static <T> void formatTableColumnDate(TableColumn<T, Date> tableColumn, String format) {
 		tableColumn.setCellFactory(column -> {
 			TableCell<T, Date> cell = new TableCell<T, Date>() {
